@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caixa de Ferramentas — Barra de Ferramentas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  :root { --bg:#1b1b1b; --panel:#262626; --line:#3a3a3a; --text:#e6e6e6; --muted:#9a9a9a; --accent:#1e88e5; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Open Sans",system-ui,sans-serif; background:var(--bg); color:var(--text); }
+  header { background:#fff; color:#222; display:flex; gap:24px; align-items:stretch; }
+  header .bar { width:16px; background:#0277d4; }
+  header div.t { padding:28px 0; }
+  header h1 { margin:0; font-weight:400; letter-spacing:.04em; font-size:clamp(28px,5vw,56px); color:#1b1b1b; }
+  header p { margin:6px 0 0; color:#666; font-size:clamp(16px,2vw,22px); }
+  main { display:flex; flex-wrap:wrap; gap:48px; justify-content:center; padding:56px 24px; }
+  .panel { width:300px; min-height:620px; background:var(--panel); border-radius:4px; box-shadow:0 4px 20px rgba(0,0,0,.4); }
+  .panel-head { height:60px; display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--line); font-size:15px; }
+  .back { position:absolute; left:12px; background:none; border:0; color:var(--text); cursor:pointer; padding:6px; border-radius:50%; display:flex; }
+  .back:hover { background:#333; }
+  .hint { text-align:center; color:var(--muted); font-size:11px; margin:22px 30px 26px; line-height:1.35; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 0; padding:0 24px 24px; }
+  .item { background:none; border:0; color:var(--text); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; font:600 12px "Open Sans",sans-serif; padding:4px; position:relative; }
+  .item .ic { width:62px; height:62px; border:1.5px solid #8a8a8a; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:.15s; }
+  .item .ic .material-icons { font-size:22px; }
+  .item:hover, .item:focus-visible { color:var(--accent); outline:none; }
+  .item:hover .ic, .item:focus-visible .ic { border-color:var(--accent); }
+  .item[data-tip]:hover::after { content:attr(data-tip); position:absolute; top:58px; left:50%; transform:translateX(-30%); background:#111; color:#ddd; font-size:9px; font-weight:400; padding:3px 8px; white-space:nowrap; border:1px solid #444; z-index:2; }
+  .form { width:340px; min-height:620px; background:#fff; color:#222; border-radius:4px; padding:20px; }
+  .form h2 { margin:0 0 12px; font-size:16px; font-weight:600; }
+  .form ul { list-style:none; padding:0; margin:0; }
+  .form li { display:flex; justify-content:space-between; align-items:center; gap:8px; border:1px solid #ddd; border-radius:4px; padding:10px 12px; margin-bottom:8px; font-size:13px; }
+  .form li .material-icons { font-size:18px; color:#0277d4; vertical-align:middle; margin-right:6px; }
+  .form li button { background:none; border:0; cursor:pointer; color:#999; }
+  .form li button:hover { color:#d32f2f; }
+  .empty { color:#888; font-size:13px; }
+  section.preview { padding:0 24px 56px; text-align:center; }
+  section.preview h2 { font-weight:400; font-size:18px; color:var(--muted); }
+  section.preview img { max-width:100%; border-radius:4px; }
+</style>
+</head>
+<body>
+<header><span class="bar"></span><div class="t"><h1>CAIXA DE FERRAMENTAS</h1><p>Escolhendo componentes da barra</p></div></header>
+
+<main>
+  <div class="panel" aria-live="polite">
+    <div class="panel-head">
+      <button class="back" id="back" aria-label="Voltar" hidden><span class="material-icons">arrow_back</span></button>
+      <span id="title">Barra de Ferramentas</span>
+    </div>
+    <p class="hint">Para adicionar itens ao seu formulário<br>clique nas categorias abaixo</p>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="form">
+    <h2>Seu formulário</h2>
+    <ul id="fields"><li class="empty">Nenhum campo adicionado ainda.</li></ul>
+  </div>
+</main>
+
+<section class="preview">
+  <h2>Design original</h2>
+  <img src="assets/preview.png" alt="Pré-visualização do design da Caixa de Ferramentas" loading="lazy">
+</section>
+
+<script>
+const C = [
+  { name:"Texto", icon:"title", tip:"Adicione campos simples", items:[["Campo simples","text_fields"],["Campos Múltiplos","add"],["Título","title"],["Parágrafo","notes"]] },
+  { name:"Contato", icon:"email", items:[["Telefone","call"],["Internacional","public"],["Email","email"],["Link","web_asset"]] },
+  { name:"Documentos", icon:"featured_video", items:[["RG","fingerprint"],["CPF","contact_page"],["Carteira de Trabalho","work"],["PIS","account_circle"],["CNH","directions_car"],["Passaporte","flight"],["DRT","business"],["Reservista","how_to_reg"],["Título de Eleitor","star"],["Outros Documentos","add"]] },
+  { name:"Lugares", icon:"place", tip:"Adicione um campo de endereço", items:[["Endereço","place"],["Naturalidade","location_city"],["Nacionalidade","language"]] },
+  { name:"Data e Hora", icon:"event", items:[["Data","calendar_today"],["Calendário","event"],["Hora","alarm"],["Intervalo de Horas","pending_actions"]] },
+  { name:"Escolhas", icon:"check", items:[["Em Lista","arrow_drop_down"],["Única","radio_button_checked"],["Múltiplas","check_box"]] },
+  { name:"Mensagens", icon:"message", items:[["Curta","short_text"],["Longa","subject"]] },
+  { name:"Anexar", icon:"file_upload", items:[["Imagem","image"],["Documento","attach_file"],["Vídeos","movie"]] },
+  { name:"Divisão", icon:"drag_handle", items:[["Quebra de Seção","format_list_bulleted"],["Quebra de Página","view_agenda"]] },
+  { name:"Mais", icon:"more_horiz", items:[["Regulamento","check_circle_outline"],["Captcha","security"]] },
+];
+const grid = document.getElementById("grid"), title = document.getElementById("title"),
+      back = document.getElementById("back"), fields = document.getElementById("fields");
+const added = [];
+
+function btn(label, icon, onClick, tip) {
+  const b = document.createElement("button");
+  b.className = "item"; b.type = "button";
+  if (tip) b.dataset.tip = tip;
+  b.innerHTML = `<span class="ic"><span class="material-icons">${icon}</span></span><span></span>`;
+  b.lastChild.textContent = label;
+  b.onclick = onClick;
+  return b;
+}
+function home() {
+  title.textContent = "Barra de Ferramentas"; back.hidden = true; grid.replaceChildren();
+  C.forEach(c => grid.append(btn(c.name, c.icon, () => open(c), c.tip)));
+}
+function open(c) {
+  title.textContent = c.name; back.hidden = false; grid.replaceChildren();
+  c.items.forEach(([n, i]) => grid.append(btn(n, i, () => add(c.name, n, i))));
+}
+function add(cat, n, i) { added.push({cat, n, i}); render(); }
+function render() {
+  fields.replaceChildren();
+  if (!added.length) { fields.innerHTML = '<li class="empty">Nenhum campo adicionado ainda.</li>'; return; }
+  added.forEach((f, idx) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span><span class="material-icons">${f.i}</span><span></span></span><button aria-label="Excluir"><span class="material-icons">delete</span></button>`;
+    li.querySelector("span span:last-child").textContent = `${f.n} (${f.cat})`;
+    li.querySelector("button").onclick = () => { added.splice(idx, 1); render(); };
+    fields.append(li);
+  });
+}
+back.onclick = home;
+home();
+</script>
+</body>
+</html>
